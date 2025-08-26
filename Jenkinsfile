@@ -5,6 +5,9 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+    environment {
+        DOCKER_CONFIG = "${env.WORKSPACE}/.docker"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -14,10 +17,12 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh 'docker build -t jenkins-demo-app:latest .'
+                sh 'docker build -t jenkins-demo-app:latest .'
             }
         }
         stage('Run Container') {
             steps {
+                sh 'docker rm -f demo-app || true'
                 sh 'docker run -d -p 5000:5000 --name demo-app jenkins-demo-app:latest'
             }
         }
